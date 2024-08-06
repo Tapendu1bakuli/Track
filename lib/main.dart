@@ -38,26 +38,26 @@ class MyHomePage extends StatelessWidget {
             Text('Distance Covered:'),
             Text(
               '${locationController.totalDistance.value.toStringAsFixed(2)} meters',
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.headlineLarge,
             ),
-            ElevatedButton(
-              onPressed: () async {
-                await DBHelper.insert('distances', {
-                  'id': DateTime.now().toIso8601String(),
-                  'distance': locationController.totalDistance.value,
-                });
-              },
-              child: Text('Save Distance'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final data = await DBHelper.getData('distances');
-                data.forEach((row) {
-                  print('ID: ${row['id']}, Distance: ${row['distance']}');
-                });
-              },
-              child: Text('Load Distances'),
-            ),
+            // ElevatedButton(
+            //   onPressed: () async {
+            //     await DBHelper.insert('distances', {
+            //       'id': DateTime.now().toIso8601String(),
+            //       'distance': locationController.totalDistance.value,
+            //     });
+            //   },
+            //   child: Text('Save Distance'),
+            // ),
+            // ElevatedButton(
+            //   onPressed: () async {
+            //     final data = await DBHelper.getData('distances');
+            //     data.forEach((row) {
+            //       print('ID: ${row['id']}, Distance: ${row['distance']}');
+            //     });
+            //   },
+            //   child: Text('Load Distances'),
+            // ),
           ],
         )),
       ),

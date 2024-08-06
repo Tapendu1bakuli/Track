@@ -21,8 +21,9 @@ class LocationController extends GetxController {
   Location location = Location();
   StreamSubscription<LocationData>? locationSubscription;
 
-  final double movementThreshold = 5.0; // Minimum distance change in meters
-  final int stabilityDuration = 2000; // Time in milliseconds to consider location stable
+  final double movementThreshold = 2.0; // Minimum distance change in meters to consider as movement
+  final double speedThreshold = 2.0; // Minimum speed in m/s to consider as movement
+  final int updateInterval = 1; // Minimum time interval in milliseconds between updates
 
   Position? previousLocation;
   DateTime? lastUpdateTime;
@@ -76,16 +77,18 @@ class LocationController extends GetxController {
             newLocation.longitude,
           );
 
-          if (distance > movementThreshold) {
-            final DateTime now = DateTime.now();
-            if (lastUpdateTime == null || now.difference(lastUpdateTime!) >= Duration(milliseconds: stabilityDuration)) {
-              totalDistance.value += distance;
-              lastUpdateTime = now;
-            }
+          final DateTime now = DateTime.now();
+          final bool isMoving = distance > movementThreshold || newLocation.speed > speedThreshold;
+
+          if (isMoving && (lastUpdateTime == null || now.difference(lastUpdateTime!) >= Duration(milliseconds: updateInterval))) {
+            totalDistance.value += distance;
+            lastUpdateTime = now;
+            print("Total distance updated: ${totalDistance.value}");
+          } else {
+            print("User not moving or update interval not reached");
           }
         }
 
-        // Update the previous location
         previousLocation = newLocation;
         currentLocation.value = newLocation;
       }

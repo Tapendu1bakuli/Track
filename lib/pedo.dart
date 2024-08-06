@@ -18,7 +18,10 @@ class TEstApp extends StatefulWidget {
 class _TEstAppState extends State<TEstApp> {
   late Stream<StepCount> _stepCountStream;
   late Stream<PedestrianStatus> _pedestrianStatusStream;
-  String _status = '?', _steps = '?';
+  String _status = '?', _steps = '?', _distance = '?';
+
+  // Average step length in meters (can vary between 0.6 and 0.8 meters per step)
+  final double _stepLength = 0.7;
 
   @override
   void initState() {
@@ -30,6 +33,9 @@ class _TEstAppState extends State<TEstApp> {
     print(event);
     setState(() {
       _steps = event.steps.toString();
+      double distanceInMeters = event.steps * _stepLength;
+      double distanceInKm = distanceInMeters / 1000;
+      _distance = distanceInKm.toStringAsFixed(2);
     });
   }
 
@@ -114,8 +120,8 @@ class _TEstAppState extends State<TEstApp> {
                 _status == 'walking'
                     ? Icons.directions_walk
                     : _status == 'stopped'
-                        ? Icons.accessibility_new
-                        : Icons.error,
+                    ? Icons.accessibility_new
+                    : Icons.error,
                 size: 100,
               ),
               Center(
@@ -125,7 +131,20 @@ class _TEstAppState extends State<TEstApp> {
                       ? TextStyle(fontSize: 30)
                       : TextStyle(fontSize: 20, color: Colors.red),
                 ),
-              )
+              ),
+              Divider(
+                height: 100,
+                thickness: 0,
+                color: Colors.white,
+              ),
+              Text(
+                'Distance Covered',
+                style: TextStyle(fontSize: 30),
+              ),
+              Text(
+                '$_distance km',
+                style: TextStyle(fontSize: 60),
+              ),
             ],
           ),
         ),
